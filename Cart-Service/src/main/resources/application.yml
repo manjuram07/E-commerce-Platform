@@ -1,0 +1,68 @@
+server:
+  port: 3335
+spring:
+  application:
+    name: Cart-service
+  cloud:
+    consul:
+      host: localhost
+      discovery:
+        hostname: localhost
+      config:
+        fail-fast: false
+        enabled: true
+        prefix: config
+        defaultContext: application
+        data-key: data
+        profileSeparator: '::'
+        format: YAML
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  health:
+    circuitbreakers:
+      enabled : true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+# Circuit Breaker configuration for Cart-service
+resilience4j:
+  circuitbreaker:
+    instances:
+      Cart-service:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 60
+        minimumNumberOfCalls: 6
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 3s
+        permittedNumberOfCallsInHalfOpenState: 2
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+
+# Retry configuration for Cart-service
+resilience4j.retry:
+  instances:
+    Cart-service:
+      max-attempts: 3
+      wait-duration: 10s
+
+
+# Rate Limiter configuration for Cart-service
+resilience4j.ratelimiter:
+    instances:
+        Cart-service:
+            limitForPeriod: 5
+            limitRefreshPeriod: 1s
+            timeoutDuration: 0s

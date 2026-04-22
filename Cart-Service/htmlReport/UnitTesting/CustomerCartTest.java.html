@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerCartTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CustomerCartTest Coverage Results</a> &gt; <a href="index.source.html" class="el_package">UnitTesting</a> &gt; <span class="el_source">CustomerCartTest.java</span></div><h1>CustomerCartTest.java</h1><pre class="source lang-java linenums">package UnitTesting;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+
+import com.infy.ekart.cart.dto.CartProductDTO;
+import com.infy.ekart.cart.dto.CustomerCartDTO;
+import com.infy.ekart.cart.dto.ProductDTO;
+import com.infy.ekart.cart.entity.CartProduct;
+import com.infy.ekart.cart.entity.CustomerCart;
+import com.infy.ekart.cart.exception.EKartCustomerCartException;
+import com.infy.ekart.cart.repository.CartProductRepository;
+import com.infy.ekart.cart.repository.CustomerCartRepository;
+import com.infy.ekart.cart.service.CustomerCartServiceImpl;
+import org.springframework.web.reactive.function.client.WebClient;
+
+
+@ExtendWith(MockitoExtension.class)
+<span class="fc" id="L32">public class CustomerCartTest {</span>
+
+    @Mock
+    private CustomerCartRepository customerCartRepository;
+
+    @Mock
+    private CartProductRepository cartProductRepository;
+
+    @Mock
+    private WebClient webClient;
+
+    @InjectMocks
+    private CustomerCartServiceImpl customerCartService;
+
+    private CustomerCartDTO customerCartDTO;
+    private CustomerCart customerCart;
+    private CartProduct cartProduct;
+    private CartProductDTO cartProductDTO;
+    private ProductDTO productDTO;
+
+    @BeforeEach
+    public void setUp() {
+        // Initialize ProductDTO
+<span class="fc" id="L55">        productDTO = new ProductDTO();</span>
+<span class="fc" id="L56">        productDTO.setProductId(1);</span>
+<span class="fc" id="L57">        productDTO.setName(&quot;Test Product&quot;);</span>
+<span class="fc" id="L58">        productDTO.setDescription(&quot;Test Description&quot;);</span>
+<span class="fc" id="L59">        productDTO.setCategory(&quot;Test Category&quot;);</span>
+<span class="fc" id="L60">        productDTO.setBrand(&quot;Test Brand&quot;);</span>
+<span class="fc" id="L61">        productDTO.setPrice(100.0);</span>
+<span class="fc" id="L62">        productDTO.setAvailableQuantity(10);</span>
+
+        // Initialize CartProductDTO
+<span class="fc" id="L65">        cartProductDTO = new CartProductDTO();</span>
+<span class="fc" id="L66">        cartProductDTO.setCartProductId(1);</span>
+<span class="fc" id="L67">        cartProductDTO.setProduct(productDTO);</span>
+<span class="fc" id="L68">        cartProductDTO.setQuantity(2);</span>
+
+        // Initialize Set of CartProductDTOs
+<span class="fc" id="L71">        Set&lt;CartProductDTO&gt; cartProductDTOs = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L72">        cartProductDTOs.add(cartProductDTO);</span>
+
+        // Initialize CustomerCartDTO
+<span class="fc" id="L75">        customerCartDTO = new CustomerCartDTO();</span>
+<span class="fc" id="L76">        customerCartDTO.setCartId(1);</span>
+<span class="fc" id="L77">        customerCartDTO.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L78">        customerCartDTO.setCartProducts(cartProductDTOs);</span>
+
+        // Initialize CartProduct
+<span class="fc" id="L81">        cartProduct = new CartProduct();</span>
+<span class="fc" id="L82">        cartProduct.setCartProductId(1);</span>
+<span class="fc" id="L83">        cartProduct.setProductId(1);</span>
+<span class="fc" id="L84">        cartProduct.setQuantity(2);</span>
+
+        // Initialize CustomerCart
+<span class="fc" id="L87">        Set&lt;CartProduct&gt; cartProducts = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L88">        cartProducts.add(cartProduct);</span>
+
+<span class="fc" id="L90">        customerCart = new CustomerCart();</span>
+<span class="fc" id="L91">        customerCart.setCartId(1);</span>
+<span class="fc" id="L92">        customerCart.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L93">        customerCart.setCartProducts(cartProducts);</span>
+<span class="fc" id="L94">    }</span>
+
+    // Test for addProductToCart - New Cart
+//    @Test
+//    @DisplayName(&quot;Test addProductToCart - New Cart&quot;)
+//    public void testAddProductToCartNewCart() throws EKartCustomerCartException {
+//        // Arrange
+//        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))
+//                .thenReturn(Optional.empty());
+//        when(customerCartRepository.save(any(CustomerCart.class)))
+//                .thenReturn(customerCart);
+//
+//        // Act
+//        Integer cartId = customerCartService.addProductToCart(customerCartDTO);
+//
+//        // Assert
+//        assertNotNull(cartId);
+//        assertEquals(1, cartId);
+//        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);
+//        verify(customerCartRepository, times(1)).save(any(CustomerCart.class));
+//    }
+
+    // Test for addProductToCart - Existing Cart with New Product
+    @Test
+    @DisplayName(&quot;Test addProductToCart - Existing Cart with New Product&quot;)
+    public void testAddProductToCartExistingCartNewProduct() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L121">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L122">                .thenReturn(Optional.of(customerCart));</span>
+
+        // Create a new product to add
+<span class="fc" id="L125">        ProductDTO newProductDTO = new ProductDTO();</span>
+<span class="fc" id="L126">        newProductDTO.setProductId(2);</span>
+<span class="fc" id="L127">        CartProductDTO newCartProductDTO = new CartProductDTO();</span>
+<span class="fc" id="L128">        newCartProductDTO.setProduct(newProductDTO);</span>
+<span class="fc" id="L129">        newCartProductDTO.setQuantity(5);</span>
+
+<span class="fc" id="L131">        Set&lt;CartProductDTO&gt; newCartProducts = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L132">        newCartProducts.add(newCartProductDTO);</span>
+
+<span class="fc" id="L134">        CustomerCartDTO newCustomerCartDTO = new CustomerCartDTO();</span>
+<span class="fc" id="L135">        newCustomerCartDTO.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L136">        newCustomerCartDTO.setCartProducts(newCartProducts);</span>
+
+        // Act
+<span class="fc" id="L139">        Integer cartId = customerCartService.addProductToCart(newCustomerCartDTO);</span>
+
+        // Assert
+<span class="fc" id="L142">        assertNotNull(cartId);</span>
+<span class="fc" id="L143">        assertEquals(1, cartId);</span>
+<span class="fc" id="L144">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L145">    }</span>
+
+    // Test for addProductToCart - Existing Cart with Existing Product (Quantity Update)
+    @Test
+    @DisplayName(&quot;Test addProductToCart - Existing Cart with Existing Product&quot;)
+    public void testAddProductToCartExistingCartExistingProduct() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L152">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L153">                .thenReturn(Optional.of(customerCart));</span>
+
+        // Create a product that already exists in the cart
+<span class="fc" id="L156">        ProductDTO existingProductDTO = new ProductDTO();</span>
+<span class="fc" id="L157">        existingProductDTO.setProductId(1);</span>
+<span class="fc" id="L158">        CartProductDTO existingCartProductDTO = new CartProductDTO();</span>
+<span class="fc" id="L159">        existingCartProductDTO.setProduct(existingProductDTO);</span>
+<span class="fc" id="L160">        existingCartProductDTO.setQuantity(3); // Adding 3 more to existing 2 = 5 total</span>
+
+<span class="fc" id="L162">        Set&lt;CartProductDTO&gt; existingCartProducts = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L163">        existingCartProducts.add(existingCartProductDTO);</span>
+
+<span class="fc" id="L165">        CustomerCartDTO existingCustomerCartDTO = new CustomerCartDTO();</span>
+<span class="fc" id="L166">        existingCustomerCartDTO.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L167">        existingCustomerCartDTO.setCartProducts(existingCartProducts);</span>
+
+        // Act
+<span class="fc" id="L170">        Integer cartId = customerCartService.addProductToCart(existingCustomerCartDTO);</span>
+
+        // Assert
+<span class="fc" id="L173">        assertNotNull(cartId);</span>
+<span class="fc" id="L174">        assertEquals(1, cartId);</span>
+<span class="fc" id="L175">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L176">    }</span>
+
+    // Test for getProductsFromCart - Success
+//    @Test
+//    @DisplayName(&quot;Test getProductsFromCart - Success&quot;)
+//    public void testGetProductsFromCartSuccess() throws EKartCustomerCartException {
+//        // Arrange
+//        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))
+//                .thenReturn(Optional.of(customerCart));
+//
+//        // Mock WebClient calls
+//        when(webClient.get()).thenReturn(mock(org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec.class));
+//
+//        // Act
+//        Set&lt;CartProductDTO&gt; result = customerCartService.getProductsFromCart(&quot;test@example.com&quot;);
+//
+//        // Assert
+//        assertNotNull(result);
+//        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);
+//    }
+
+    // Test for getProductsFromCart - Cart Not Found
+    @Test
+    @DisplayName(&quot;Test getProductsFromCart - Cart Not Found&quot;)
+    public void testGetProductsFromCartCartNotFound() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L202">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L203">                .thenReturn(Optional.empty());</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L206">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L207">            customerCartService.getProductsFromCart(&quot;test@example.com&quot;);</span>
+<span class="nc" id="L208">        });</span>
+<span class="fc" id="L209">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L210">    }</span>
+
+    // Test for getProductsFromCart - No Products in Cart
+    @Test
+    @DisplayName(&quot;Test getProductsFromCart - No Products in Cart&quot;)
+    public void testGetProductsFromCartNoProductsInCart() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L217">        CustomerCart emptyCart = new CustomerCart();</span>
+<span class="fc" id="L218">        emptyCart.setCartId(1);</span>
+<span class="fc" id="L219">        emptyCart.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L220">        emptyCart.setCartProducts(new HashSet&lt;&gt;());</span>
+
+<span class="fc" id="L222">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L223">                .thenReturn(Optional.of(emptyCart));</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L226">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L227">            customerCartService.getProductsFromCart(&quot;test@example.com&quot;);</span>
+<span class="nc" id="L228">        });</span>
+<span class="fc" id="L229">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L230">    }</span>
+
+    // Test for deleteProductFromCart - Success
+    @Test
+    @DisplayName(&quot;Test deleteProductFromCart - Success&quot;)
+    public void testDeleteProductFromCartSuccess() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L237">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L238">                .thenReturn(Optional.of(customerCart));</span>
+
+        // Act
+<span class="fc" id="L241">        customerCartService.deleteProductFromCart(&quot;test@example.com&quot;, 1);</span>
+
+        // Assert
+<span class="fc" id="L244">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L245">        verify(cartProductRepository, times(1)).delete(cartProduct);</span>
+<span class="fc" id="L246">    }</span>
+
+    // Test for deleteProductFromCart - Cart Not Found
+    @Test
+    @DisplayName(&quot;Test deleteProductFromCart - Cart Not Found&quot;)
+    public void testDeleteProductFromCartCartNotFound() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L253">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L254">                .thenReturn(Optional.empty());</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L257">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L258">            customerCartService.deleteProductFromCart(&quot;test@example.com&quot;, 1);</span>
+<span class="nc" id="L259">        });</span>
+<span class="fc" id="L260">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L261">    }</span>
+
+    // Test for deleteProductFromCart - No Products in Cart
+    @Test
+    @DisplayName(&quot;Test deleteProductFromCart - No Products in Cart&quot;)
+    public void testDeleteProductFromCartNoProductsInCart() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L268">        CustomerCart emptyCart = new CustomerCart();</span>
+<span class="fc" id="L269">        emptyCart.setCartId(1);</span>
+<span class="fc" id="L270">        emptyCart.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L271">        emptyCart.setCartProducts(new HashSet&lt;&gt;());</span>
+
+<span class="fc" id="L273">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L274">                .thenReturn(Optional.of(emptyCart));</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L277">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L278">            customerCartService.deleteProductFromCart(&quot;test@example.com&quot;, 1);</span>
+<span class="nc" id="L279">        });</span>
+<span class="fc" id="L280">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L281">    }</span>
+
+    // Test for deleteProductFromCart - Product Not Found
+    @Test
+    @DisplayName(&quot;Test deleteProductFromCart - Product Not Found&quot;)
+    public void testDeleteProductFromCartProductNotFound() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L288">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L289">                .thenReturn(Optional.of(customerCart));</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L292">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L293">            customerCartService.deleteProductFromCart(&quot;test@example.com&quot;, 999);</span>
+<span class="nc" id="L294">        });</span>
+<span class="fc" id="L295">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L296">    }</span>
+
+    // Test for deleteAllProductsFromCart - Success
+//    @Test
+//    @DisplayName(&quot;Test deleteAllProductsFromCart - Success&quot;)
+//    public void testDeleteAllProductsFromCartSuccess() throws EKartCustomerCartException {
+//        // Arrange
+//        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))
+//                .thenReturn(Optional.of(customerCart));
+//
+//        // Act
+//        customerCartService.deleteAllProductsFromCart(&quot;test@example.com&quot;);
+//
+//        // Assert
+//        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);
+//        verify(cartProductRepository, times(1)).deleteById(1);
+//    }
+
+    // Test for deleteAllProductsFromCart - Cart Not Found
+    @Test
+    @DisplayName(&quot;Test deleteAllProductsFromCart - Cart Not Found&quot;)
+    public void testDeleteAllProductsFromCartCartNotFound() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L319">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L320">                .thenReturn(Optional.empty());</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L323">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L324">            customerCartService.deleteAllProductsFromCart(&quot;test@example.com&quot;);</span>
+<span class="nc" id="L325">        });</span>
+<span class="fc" id="L326">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L327">    }</span>
+
+    // Test for deleteAllProductsFromCart - No Products in Cart
+    @Test
+    @DisplayName(&quot;Test deleteAllProductsFromCart - No Products in Cart&quot;)
+    public void testDeleteAllProductsFromCartNoProductsInCart() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L334">        CustomerCart emptyCart = new CustomerCart();</span>
+<span class="fc" id="L335">        emptyCart.setCartId(1);</span>
+<span class="fc" id="L336">        emptyCart.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L337">        emptyCart.setCartProducts(new HashSet&lt;&gt;());</span>
+
+<span class="fc" id="L339">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L340">                .thenReturn(Optional.of(emptyCart));</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L343">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L344">            customerCartService.deleteAllProductsFromCart(&quot;test@example.com&quot;);</span>
+<span class="nc" id="L345">        });</span>
+<span class="fc" id="L346">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L347">    }</span>
+
+    // Test for modifyQuantityOfProductInCart - Success
+    @Test
+    @DisplayName(&quot;Test modifyQuantityOfProductInCart - Success&quot;)
+    public void testModifyQuantityOfProductInCartSuccess() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L354">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L355">                .thenReturn(Optional.of(customerCart));</span>
+
+        // Act
+<span class="fc" id="L358">        customerCartService.modifyQuantityOfProductInCart(&quot;test@example.com&quot;, 1, 5);</span>
+
+        // Assert
+<span class="fc" id="L361">        assertEquals(5, cartProduct.getQuantity());</span>
+<span class="fc" id="L362">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L363">    }</span>
+
+    // Test for modifyQuantityOfProductInCart - Cart Not Found
+    @Test
+    @DisplayName(&quot;Test modifyQuantityOfProductInCart - Cart Not Found&quot;)
+    public void testModifyQuantityOfProductInCartCartNotFound() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L370">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L371">                .thenReturn(Optional.empty());</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L374">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L375">            customerCartService.modifyQuantityOfProductInCart(&quot;test@example.com&quot;, 1, 5);</span>
+<span class="nc" id="L376">        });</span>
+<span class="fc" id="L377">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L378">    }</span>
+
+    // Test for modifyQuantityOfProductInCart - No Products in Cart
+    @Test
+    @DisplayName(&quot;Test modifyQuantityOfProductInCart - No Products in Cart&quot;)
+    public void testModifyQuantityOfProductInCartNoProductsInCart() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L385">        CustomerCart emptyCart = new CustomerCart();</span>
+<span class="fc" id="L386">        emptyCart.setCartId(1);</span>
+<span class="fc" id="L387">        emptyCart.setCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L388">        emptyCart.setCartProducts(new HashSet&lt;&gt;());</span>
+
+<span class="fc" id="L390">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L391">                .thenReturn(Optional.of(emptyCart));</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L394">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L395">            customerCartService.modifyQuantityOfProductInCart(&quot;test@example.com&quot;, 1, 5);</span>
+<span class="nc" id="L396">        });</span>
+<span class="fc" id="L397">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L398">    }</span>
+
+    // Test for modifyQuantityOfProductInCart - Product Not Found
+    @Test
+    @DisplayName(&quot;Test modifyQuantityOfProductInCart - Product Not Found&quot;)
+    public void testModifyQuantityOfProductInCartProductNotFound() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L405">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L406">                .thenReturn(Optional.of(customerCart));</span>
+
+        // Act &amp; Assert
+<span class="fc" id="L409">        assertThrows(EKartCustomerCartException.class, () -&gt; {</span>
+<span class="nc" id="L410">            customerCartService.modifyQuantityOfProductInCart(&quot;test@example.com&quot;, 999, 5);</span>
+<span class="nc" id="L411">        });</span>
+<span class="fc" id="L412">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L413">    }</span>
+
+    // Test for modifyQuantityOfProductInCart - Update with Zero Quantity
+    @Test
+    @DisplayName(&quot;Test modifyQuantityOfProductInCart - Update with Zero Quantity&quot;)
+    public void testModifyQuantityOfProductInCartZeroQuantity() throws EKartCustomerCartException {
+        // Arrange
+<span class="fc" id="L420">        when(customerCartRepository.findByCustomerEmailId(&quot;test@example.com&quot;))</span>
+<span class="fc" id="L421">                .thenReturn(Optional.of(customerCart));</span>
+
+        // Act
+<span class="fc" id="L424">        customerCartService.modifyQuantityOfProductInCart(&quot;test@example.com&quot;, 1, 0);</span>
+
+        // Assert
+<span class="fc" id="L427">        assertEquals(0, cartProduct.getQuantity());</span>
+<span class="fc" id="L428">        verify(customerCartRepository, times(1)).findByCustomerEmailId(&quot;test@example.com&quot;);</span>
+<span class="fc" id="L429">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

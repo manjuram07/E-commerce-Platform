@@ -1,0 +1,17 @@
+
+#  servlet:
+#    context-path: /Ekart
+
+    
+#spring:
+#  application:
+#    name: GatewayMS
+#  cloud:
+#    consul:
+#      host: localhost
+#      discovery:
+#        health-check-url: http://localhost:${server.port}${server.servlet.context-path}/actuator
+#    gateway:
+#      discovery:
+#        locator:
+#          lower-case-service-id: true
