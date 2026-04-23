@@ -2,7 +2,15 @@ package com.infy.ekart.customer.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartProductDTO {
 	private Integer cartProductId;
 	
@@ -11,21 +19,8 @@ public class CartProductDTO {
 	@PositiveOrZero(message = "{cartproduct.invalid.quantity}")
 	private Integer quantity;
 
-	
-	public Integer getQuantity() {
-		return quantity;
-	}
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
-	public Integer getCartProductId() {
-		return cartProductId;
-	}
-	public void setCartProductId(Integer cartProductId) {
-		this.cartProductId = cartProductId;
-	}
-	
-	@Override
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -48,12 +43,6 @@ public class CartProductDTO {
 			return false;
 		return true;
 	}
-	public ProductDTO getProduct() {
-		return product;
-	}
-	public void setProduct(ProductDTO product) {
-		this.product = product;
-	}
-	
-	
+
+
 }

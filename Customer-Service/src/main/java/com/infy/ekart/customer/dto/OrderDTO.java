@@ -7,9 +7,16 @@ import java.util.List;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
-
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderDTO {
 	
 	private Integer orderId;
@@ -29,72 +36,6 @@ public class OrderDTO {
 	private String deliveryAddress;
 	
 	private List<OrderedProductDTO> orderedProducts;
-	public String getOrderStatus() {
-		return orderStatus;
-	}
-	public void setOrderStatus(String orderStatus) {
-		this.orderStatus = orderStatus;
-	}
-	
-	public Integer getOrderId() {
-		return orderId;
-	}
-	public void setOrderId(Integer orderId) {
-		this.orderId = orderId;
-	}
-	public String getCustomerEmailId() {
-		return customerEmailId;
-	}
-	public void setCustomerEmailId(String customerEmailId) {
-		this.customerEmailId = customerEmailId;
-	}
-	
-	public Double getTotalPrice() {
-		return totalPrice;
-	}
-	public void setTotalPrice(Double totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-	
-	
-	
-	public LocalDateTime getDateOfOrder() {
-		return dateOfOrder;
-	}
-	public void setDateOfOrder(LocalDateTime dateOfOrder) {
-		this.dateOfOrder = dateOfOrder;
-	}
-	public LocalDateTime getDateOfDelivery() {
-		return dateOfDelivery;
-	}
-	public void setDateOfDelivery(LocalDateTime dateOfDelivery) {
-		this.dateOfDelivery = dateOfDelivery;
-	}
-	public Double getDiscount() {
-		return discount;
-	}
-	public void setDiscount(Double discount) {
-		this.discount = discount;
-	}
-	public List<OrderedProductDTO> getOrderedProducts() {
-		return orderedProducts;
-	}
-	public void setOrderedProducts(List<OrderedProductDTO> orderedProducts) {
-		this.orderedProducts = orderedProducts;
-	}
-	public String getPaymentThrough() {
-		return paymentThrough;
-	}
-	public void setPaymentThrough(String paymentThrough) {
-		this.paymentThrough = paymentThrough;
-	}
-	public String getDeliveryAddress() {
-		return deliveryAddress;
-	}
-	public void setDeliveryAddress(String deliveryAddress) {
-		this.deliveryAddress = deliveryAddress;
-	}
-	
 
 
 }
