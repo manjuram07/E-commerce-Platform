@@ -2,7 +2,7 @@ server:
   port: 3337
 spring:
   application:
-    name: PaymentMS
+    name: paymentService
   cloud:
     consul:
       host: localhost
@@ -20,7 +20,7 @@ spring:
 resilience4j:
   circuitbreaker:
     instances:
-      PaymentMS:
+      paymentService:
         registerHealthIndicator: true
         slidingWindowSize: 10
         minimumNumberOfCalls: 5
