@@ -8,14 +8,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class CustomerConfig {
     
-//	@Bean 
+//	@Bean
 //	// Make this as load-balanced rest template
 //	@LoadBalanced
 //	public RestTemplate restTemplate() {
 //		return new RestTemplate();
 //	}
-	
-	@Bean	
+
+	@Bean
 	public WebClient webClient() {
 		return WebClient.builder().build();
 	}
