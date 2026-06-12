@@ -12,10 +12,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartProductDTO {
+
 	private Integer cartProductId;
-	
+
 	@Valid
 	private ProductDTO product;
+
 	@PositiveOrZero(message = "{cartproduct.invalid.quantity}")
 	private Integer quantity;
 
