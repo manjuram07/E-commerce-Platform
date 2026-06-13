@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.infy.ekart.payment.entity.Transaction;
 
-public interface TransactionRepository   extends CrudRepository<Transaction, Integer> {
+public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
 
 }
