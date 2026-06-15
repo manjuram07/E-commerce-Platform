@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,15 @@ import com.infy.ekart.product.repository.ProductRepository;
 @Service(value = "customerProductService")
 @Transactional
 public class CustomerProductServiceImpl implements CustomerProductService {
-	@Autowired
-	private ProductRepository productRepository;
+
+    private final ProductRepository productRepository;
+
+    private final Environment environment;
+
+	public CustomerProductServiceImpl(ProductRepository productRepository, Environment environment) {
+		this.productRepository = productRepository;
+		this.environment = environment;
+	}
 
 	//This method will retrieve list of all the products from database
 	@Override
@@ -64,5 +72,22 @@ public class CustomerProductServiceImpl implements CustomerProductService {
 		Optional<Product> productOp = productRepository.findById(productId);
 		Product product =productOp.orElseThrow(() -> new EKartProductException("ProductService.PRODUCT_NOT_AVAILABLE"));
 		product.setAvailableQuantity(product.getAvailableQuantity()-quantity);
+	}
+
+	@Override
+	public ProductDTO getProductByName(String name) throws EKartProductException {
+		Optional<Product> productOp = productRepository.findByName(name);
+		Product product = productOp.orElseThrow(() -> new EKartProductException("ProductService.PRODUCT_NOT_AVAILABLE"));
+
+		ProductDTO productDTO = new ProductDTO();
+		productDTO.setBrand(product.getBrand());
+		productDTO.setCategory(product.getCategory());
+		productDTO.setDescription(product.getDescription());
+		productDTO.setName(product.getName());
+		productDTO.setPrice(product.getPrice());
+		productDTO.setProductId(product.getProductId());
+		productDTO.setAvailableQuantity(product.getAvailableQuantity());
+
+		return productDTO;
 	}
 }

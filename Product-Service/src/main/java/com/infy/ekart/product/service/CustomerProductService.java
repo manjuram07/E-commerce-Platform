@@ -9,7 +9,9 @@ public interface CustomerProductService {
 	List<ProductDTO> getAllProducts() throws EKartProductException;
 	
 	ProductDTO getProductById(Integer productId) throws EKartProductException;
-	
+
+	ProductDTO getProductByName(String name) throws EKartProductException;
+
 	
     void reduceAvailableQuantity(Integer productId, Integer quantity) throws EKartProductException ;
 }

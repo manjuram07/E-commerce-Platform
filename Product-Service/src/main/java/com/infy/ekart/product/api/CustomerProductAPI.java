@@ -9,13 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.infy.ekart.product.dto.ProductDTO;
 import com.infy.ekart.product.exception.EKartProductException;
@@ -63,6 +57,15 @@ public class CustomerProductAPI {
 		// write your logic here
 		customerProductService.reduceAvailableQuantity(productId, quantity);
 		return new ResponseEntity<>(environment.getProperty("ProductAPI.REDUCE_QUANTITY_SUCCESSFULL"),HttpStatus.OK);
+
+	}
+
+	@GetMapping("/product")
+	public ResponseEntity<ProductDTO> getProductByName(@RequestParam String name) throws EKartProductException {
+		// delegate to service to fetch product by name
+		ProductDTO product = customerProductService.getProductByName(name);
+
+		return new ResponseEntity<ProductDTO>(product, HttpStatus.OK);
 
 	}
 }

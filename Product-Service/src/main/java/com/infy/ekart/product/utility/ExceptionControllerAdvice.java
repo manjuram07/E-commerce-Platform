@@ -1,12 +1,14 @@
 package com.infy.ekart.product.utility;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -19,8 +21,15 @@ import com.infy.ekart.product.exception.EKartProductException;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
-    @Autowired
+
     Environment environment;
+
+    public ExceptionControllerAdvice(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorInfo> generalExceptionHandler(Exception exception) {
@@ -34,7 +43,8 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(EKartProductException.class)
     public ResponseEntity<ErrorInfo> ekartExceptionHandler(EKartProductException exception) {
         ErrorInfo error = new ErrorInfo();
-        error.setErrorMessage(environment.getProperty(exception.getMessage()));
+        String message = messageSource.getMessage(exception.getMessage(), null, Locale.getDefault());
+        error.setErrorMessage(message);
         error.setTimestamp(LocalDateTime.now());
         error.setErrorCode(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
