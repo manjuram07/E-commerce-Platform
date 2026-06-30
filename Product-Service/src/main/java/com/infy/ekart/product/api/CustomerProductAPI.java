@@ -56,7 +56,7 @@ public class CustomerProductAPI {
 			@RequestBody Integer quantity) throws EKartProductException {
 		// write your logic here
 		customerProductService.reduceAvailableQuantity(productId, quantity);
-		return new ResponseEntity<>(environment.getProperty("ProductAPI.REDUCE_QUANTITY_SUCCESSFULL"),HttpStatus.OK);
+		return new ResponseEntity<String>(environment.getProperty("ProductAPI.REDUCE_QUANTITY_SUCCESSFULL"),HttpStatus.OK);
 
 	}
 

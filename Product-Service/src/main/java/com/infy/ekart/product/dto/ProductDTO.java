@@ -1,10 +1,12 @@
 package com.infy.ekart.product.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
+@Data
 public class ProductDTO {
 	
 	private Integer productId;
