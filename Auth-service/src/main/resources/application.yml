@@ -18,10 +18,6 @@ spring:
       hibernate:
         format_sql: true
 
-jwt:
-  secret: 1234567890123raam456789012345678901234567890nsdsi123456789012345678901234
-  expiration: 3600000
-
 logging:
   level:
     org.springframework.security: DEBUG
