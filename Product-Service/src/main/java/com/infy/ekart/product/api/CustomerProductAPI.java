@@ -2,6 +2,7 @@ package com.infy.ekart.product.api;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,10 @@ import com.infy.ekart.product.dto.ProductDTO;
 import com.infy.ekart.product.exception.EKartProductException;
 import com.infy.ekart.product.service.CustomerProductService;
 
+@Tag(
+        name = "Account service API endpoints",
+        description = "Endpoints for managing accounts"
+)
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/product-api")
