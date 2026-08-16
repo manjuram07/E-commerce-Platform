@@ -1,4 +1,4 @@
-## E-Commerce Platform – Microservices
+# E-Commerce Platform – Microservices
 A scalable E-Commerce Platform built using a microservices architecture with Spring Boot. The system separates authentication, customer management, product catalog, cart management, payments, and API routing into independently deployable services.
 
 ## Architecture Overview
@@ -30,7 +30,7 @@ A scalable E-Commerce Platform built using a microservices architecture with Spr
 
 ```
 
-# Services
+## Services
 
 | Service              | Responsibility                                          | Primary Data                            |
 | -------------------- | ------------------------------------------------------- | --------------------------------------- |
@@ -43,7 +43,7 @@ A scalable E-Commerce Platform built using a microservices architecture with Spr
 
 ---
 
-# 1. Service Responsibilities
+## 1. Service Responsibilities
 
 ## 1.1 API Gateway
 
