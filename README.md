@@ -30,169 +30,356 @@ A scalable E-Commerce Platform built using a microservices architecture with Spr
 
 ```
 
-### Services
+# Services
 
-| Service | Responsibility | Primary Data |
-|---|---|---|
-| API Gateway | Single entry point, routing, cross-cutting concerns | No business database |
-| Auth Service | Authentication, authorization, users, roles, JWT | Users, roles, credentials/identity data |
-| Customer Service | Customer profile and account information | Customers, addresses |
-| Product Service | Product catalog, inventory, pricing | Products, categories, inventory |
-| Cart Service | Shopping cart and cart items | Carts, cart items |
-| Payment Service | Payment initiation, validation, status tracking | Payments, payment transactions |
+| Service              | Responsibility                                          | Primary Data                            |
+| -------------------- | ------------------------------------------------------- | --------------------------------------- |
+| **API Gateway**      | Single entry point, routing, and cross-cutting concerns | No business database                    |
+| **Auth Service**     | Authentication, authorization, users, roles, and JWT    | Users, roles, credentials/identity data |
+| **Customer Service** | Customer profile and account information                | Customers, addresses                    |
+| **Product Service**  | Product catalog, inventory, and pricing                 | Products, categories, inventory         |
+| **Cart Service**     | Shopping cart and cart items                            | Carts, cart items                       |
+| **Payment Service**  | Payment initiation, validation, and status tracking     | Payments, payment transactions          |
 
+---
 
+# 1. Service Responsibilities
 
+## 1.1 API Gateway
 
-## 1. Service Responsibilities
+The **API Gateway** is the single public entry point for client applications.
 
-### 1.1 API Gateway
+### Responsibilities
 
-The API Gateway is the single public entry point for client applications.
+* Route requests to the appropriate microservice.
+* Validate and propagate authentication information.
+* Apply common security policies.
+* Handle CORS and request filtering.
+* Provide centralized logging and request tracing.
+* Apply rate limiting where required.
+* Hide internal service addresses from external clients.
+* Provide a consistent external API boundary.
 
-Responsibilities
+### Example Routes
 
-Route requests to the appropriate microservice.
+```text
+/api/v1/auth/**        -> Auth Service
+/api/v1/customers/**   -> Customer Service
+/api/v1/products/**    -> Product Service
+/api/v1/cart/**        -> Cart Service
+/api/v1/payments/**    -> Payment Service
+```
 
-Validate and propagate authentication information.
+---
 
-Apply common security policies.
+## 1.2 Auth Service
 
-Handle CORS and request filtering.
+The **Auth Service** is responsible for authentication and authorization across the platform.
 
-Provide centralized logging and request tracing.
+### Responsibilities
 
-Apply rate limiting where required.
+* User registration and login.
+* Password hashing and credential management.
+* JWT generation and validation.
+* Role-based authorization.
+* Refresh-token management where applicable.
+* User account status management.
+* Security-related audit information.
 
-Hide internal service addresses from external clients.
+### Typical Roles
 
-Provide a consistent external API boundary.
-
-Example Routes
-
-/api/v1/auth/**       -> Auth Service
-/api/v1/customers/**  -> Customer Service
-/api/v1/products/**   -> Product Service
-/api/v1/cart/**       -> Cart Service
-/api/v1/payments/**   -> Payment Service
-
-### 1.2 Auth Service
-
-Responsible for authentication and authorization across the platform.
-
-Responsibilities
-
-User registration and login.
-
-Password hashing and credential management.
-
-JWT generation and validation.
-
-Role-based authorization.
-
-Refresh-token management where applicable.
-
-User account status management.
-
-Security-related audit information.
-
-Typical Roles
-
+```text
 CUSTOMER
 ADMIN
-
-### 1.3 Customer Service
-
-Manages customer-specific business information independently from authentication data.
-
-Responsibilities
-
-Customer profile management.
-
-Customer contact information.
-
-Shipping and billing addresses.
-
-Customer preferences.
-
-Customer account lifecycle.
-
-Expose customer information required by other services through APIs.
-
-Authentication credentials remain owned by the Auth Service. The Customer Service owns business/customer profile data.
-
-### 1.4 Product Service
-
-Responsible for the product catalog and inventory-related information.
-
-Responsibilities
-
-Product creation and updates.
-
-Product retrieval and search.
-
-Category management.
-
-Product pricing.
-
-Inventory availability.
-
-Product activation/deactivation.
-
-Product metadata such as SKU, description, brand, and images.
-
-### 1.5 Cart Service
-
-Responsible for the customer's active shopping cart.
-
-Responsibilities
-
-Create and retrieve carts.
-
-Add products to a cart.
-
-Update item quantities.
-
-Remove items.
-
-Clear carts.
-
-Calculate cart subtotal.
-
-Validate product availability through Product Service.
-
-Associate carts with authenticated customers.
-
-The Cart Service should not become the source of truth for product price or inventory. Product Service remains the owner of product information.
-
-### 1.6 Payment Service
-
-Responsible for payment processing and payment lifecycle management.
-
-Responsibilities
-
-Initiate payments.
-
-Validate payment requests.
-
-Apply payment business rules.
-
-Integrate with an external payment provider where required.
-
-Maintain payment status.
-
-Handle retries and idempotency.
-
-Store payment transaction references.
-
-Publish or expose payment status for downstream processing.
-
-Typical payment lifecycle:
 ```
-INITIATED -> PROCESSING -> SUCCESS
-                    |
-                    +----> FAILED
+
+### Primary Data
+
+```text
+Users
+Roles
+Credentials
+Refresh Tokens
+Security / Identity Data
 ```
+
+> Authentication credentials are owned by the Auth Service. Other services should not directly access the Auth Service database.
+
+---
+
+## 1.3 Customer Service
+
+The **Customer Service** manages customer business information independently from authentication data.
+
+### Responsibilities
+
+* Customer profile management.
+* Customer contact information.
+* Shipping and billing addresses.
+* Customer preferences.
+* Customer account lifecycle.
+* Expose customer information required by other services through APIs.
+
+### Primary Data
+
+```text
+Customers
+Addresses
+Customer Preferences
+```
+
+> Authentication credentials remain owned by the Auth Service. The Customer Service owns business/customer profile data.
+
+---
+
+## 1.4 Product Service
+
+The **Product Service** is responsible for the product catalog and inventory-related information.
+
+### Responsibilities
+
+* Product creation and updates.
+* Product retrieval and search.
+* Category management.
+* Product pricing.
+* Inventory availability.
+* Product activation and deactivation.
+* Product metadata such as SKU, description, brand, and images.
+
+### Primary Data
+
+```text
+Products
+Categories
+Inventory
+Pricing
+Product Metadata
+```
+
+> The Product Service is the source of truth for product information, pricing, and inventory.
+
+---
+
+## 1.5 Cart Service
+
+The **Cart Service** manages the customer's active shopping cart.
+
+### Responsibilities
+
+* Create and retrieve carts.
+* Add products to a cart.
+* Update item quantities.
+* Remove items.
+* Clear carts.
+* Calculate cart subtotal.
+* Validate product availability through the Product Service.
+* Associate carts with authenticated customers.
+
+### Primary Data
+
+```text
+Carts
+Cart Items
+Cart Status
+Cart Totals
+```
+
+> The Cart Service should not become the source of truth for product price or inventory. The Product Service remains the owner of product information.
+
+---
+
+## 1.6 Payment Service
+
+The **Payment Service** is responsible for payment processing and payment lifecycle management.
+
+### Responsibilities
+
+* Initiate payments.
+* Validate payment requests.
+* Apply payment business rules.
+* Integrate with an external payment provider where required.
+* Maintain payment status.
+* Handle retries and idempotency.
+* Store payment transaction references.
+* Publish or expose payment status for downstream processing.
+
+### Primary Data
+
+```text
+Payments
+Payment Transactions
+Payment References
+Payment Status
+Idempotency Records
+```
+
+### Typical Payment Lifecycle
+
+```text
+INITIATED
+    |
+    v
+PROCESSING
+   / \
+  v   v
+SUCCESS  FAILED
+```
+
+### Example Payment Flow
+
+```text
+Customer
+    |
+    v
+API Gateway
+    |
+    v
+Payment Service
+    |
+    +----> Payment Validation
+    |
+    +----> External Payment Provider
+    |
+    +----> Payment Status
+    |
+    v
+Notification / Order Processing
+```
+
+---
+
+# 2. Service Ownership
+
+Each microservice owns its business data and database.
+
+```text
++---------------------+
+|     API Gateway     |
+|  No business DB     |
++----------+----------+
+           |
+     +-----+-----+-------------------+
+     |           |                   |
+     v           v                   v
++---------+ +---------+       +-------------+
+|  Auth   | |Customer |       |   Product   |
+| Service | | Service |       |   Service   |
++----+----+ +----+----+       +------+------+ 
+     |           |                   |
+     v           v                   v
+ Auth DB     Customer DB         Product DB
+
+              +-------------------+
+              |                   |
+              v                   v
+        +------------+      +-------------+
+        | Cart       |      | Payment     |
+        | Service    |      | Service     |
+        +-----+------+      +------+------+
+              |                    |
+              v                    v
+           Cart DB             Payment DB
+```
+
+### Database Ownership Rule
+
+```text
+Auth Service      -> Auth Database
+Customer Service  -> Customer Database
+Product Service   -> Product Database
+Cart Service      -> Cart Database
+Payment Service   -> Payment Database
+```
+
+Services communicate through **APIs or events**, not by directly reading another service's database.
+
+---
+
+# 3. Service Communication
+
+A typical request flow can look like:
+
+```text
+Client
+  |
+  v
+API Gateway
+  |
+  +----> Auth Service
+  |
+  +----> Customer Service
+  |
+  +----> Product Service
+  |
+  +----> Cart Service
+  |
+  +----> Payment Service
+```
+
+Example:
+
+```text
+Add Product to Cart
+
+Client
+  |
+  v
+API Gateway
+  |
+  v
+Cart Service
+  |
+  v
+Product Service
+  |
+  +----> Validate Product
+  +----> Get Current Price
+  +----> Check Availability
+  |
+  v
+Cart Service
+  |
+  v
+Cart Database
+```
+
+---
+
+# 4. Core Architectural Principles
+
+### Single Responsibility
+
+Each service owns a well-defined business capability.
+
+### Database per Service
+
+Each service owns and controls its own database.
+
+### Loose Coupling
+
+Services communicate through APIs or asynchronous events instead of sharing databases.
+
+### Independent Deployment
+
+Each service should be independently buildable, deployable, and scalable.
+
+### Security
+
+Authentication and authorization are enforced at the gateway and service level where required.
+
+### Observability
+
+Services should support centralized logging, metrics, tracing, and correlation IDs.
+
+### Resilience
+
+Production services should use appropriate timeout, retry, circuit-breaker, and rate-limiting strategies.
+
+---
+
+
+The exact technologies can vary depending on deployment and organizational requirements.
+
 
 # API Design – Endpoints
 
@@ -477,7 +664,26 @@ Payment Service
 Update Payment Status
 ```
 
+# Technology Stack
 
+A typical implementation may use:
+
+```text
+Java
+Spring Boot
+Spring Security
+Spring Data JPA
+Spring Cloud Gateway
+PostgreSQL
+Redis
+Kafka
+Resilience4j
+Docker
+Kubernetes
+Prometheus
+Grafana
+OpenTelemetry
+```
 
 
 
