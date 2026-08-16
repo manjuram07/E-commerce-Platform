@@ -669,20 +669,17 @@ Update Payment Status
 A typical implementation may use:
 
 ```text
-Java
+Java 17
 Spring Boot
 Spring Security
 Spring Data JPA
 Spring Cloud Gateway
 PostgreSQL
-Redis
 Kafka
 Resilience4j
 Docker
-Kubernetes
-Prometheus
-Grafana
-OpenTelemetry
+ELK Stack
+SonarQube
 ```
 
 
